@@ -3,76 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ILMA - Senior HMI Prototype</title>
+    <title>ILMA - Home Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              peacock: { 900: '#0F3255', 800: '#16497B', 700: '#1D5A96', 600: '#256BB1', 500: '#3482CD' },
+              sage: { 900: '#43554A', 800: '#546A5C', 700: '#647B6C', 600: '#7A9383', 500: '#92AB9B' },
+              glass: { light: 'rgba(255, 255, 255, 0.1)', medium: 'rgba(255, 255, 255, 0.15)', dark: 'rgba(255, 255, 255, 0.25)' }
+            },
+            fontFamily: { sans: ['Inter', 'sans-serif'] },
+            backdropBlur: { '3xl': '30px' },
+            boxShadow: {
+              'glass-inner': 'inset 0 1px 1px rgba(255, 255, 255, 0.3), inset 0 -1px 1px rgba(0, 0, 0, 0.1)',
+              'glass-outer': '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(100, 123, 108, 0.4); }
-            70% { box-shadow: 0 0 0 30px rgba(100, 123, 108, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(100, 123, 108, 0); }
-        }
-        .animate-pulse-slow { animation: pulse-glow 3s infinite; }
-        .glass {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        /* Fixes the slider thumb for mobile touch */
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            cursor: pointer;
-        }
+      body {
+        background: linear-gradient(135deg, #16497B 0%, #0F3255 100%);
+        background-attachment: fixed;
+        color: white;
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .pulse-ring {
+        position: relative; width: 240px; height: 240px;
+      }
+      .pulse-ring::before {
+        content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        border-radius: 50%; border: 2px solid #647B6C; animation: pulse 3s linear infinite;
+      }
+      @keyframes pulse {
+        0% { width: 200px; height: 200px; opacity: 0.8; }
+        100% { width: 320px; height: 320px; opacity: 0; }
+      }
     </style>
 </head>
-<body class="text-white h-[100dvh] flex flex-col items-center justify-between p-6 bg-cover bg-center bg-no-repeat overflow-hidden" 
-      style="background-image: linear-gradient(rgba(15, 50, 85, 0.8), rgba(15, 50, 85, 0.9)), url('background.jpg');">
 
-    <div class="w-full max-w-sm pt-4">
-        <div class="flex justify-between gap-3">
-            <div class="glass flex-1 py-4 rounded-[24px] text-center">
-                <p class="text-[9px] uppercase opacity-40 tracking-[0.2em] mb-1">Plant Health</p>
-                <p class="text-lg font-light">82%</p>
-            </div>
-            <div class="glass flex-1 py-4 rounded-[24px] text-center">
-                <p class="text-[9px] uppercase opacity-40 tracking-[0.2em] mb-1">Indoor AQI</p>
-                <p class="text-lg font-light text-green-300">Good</p>
-            </div>
+<body class="w-full min-h-[100dvh] text-white flex flex-col pb-24">
+
+    <header class="w-full px-6 pt-12 pb-6 flex justify-between items-center z-50 glass-panel rounded-b-3xl">
+      <div class="flex flex-col">
+        <span class="text-[10px] text-white/50 font-light tracking-widest uppercase mb-1">Environment</span>
+        <h1 class="text-xl font-medium">Healthy <i class="fa-solid fa-leaf text-sage-500 text-sm ml-1"></i></h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right"><span class="text-sm font-medium block">22°C</span><span class="text-xs text-white/40">45%</span></div>
+        <i class="fa-solid fa-wifi text-white/80"></i>
+      </div>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center px-4 py-8 space-y-12">
+      
+      <section class="flex-grow flex items-center justify-center py-10">
+        <div class="pulse-ring flex items-center justify-center rounded-full glass-panel">
+          <div class="w-48 h-48 rounded-full bg-gradient-to-br from-sage-700/20 to-peacock-800/40 flex flex-col items-center justify-center border border-white/10 backdrop-blur-md">
+            <span class="text-6xl font-light tracking-tighter">98</span>
+            <span class="text-xs font-medium text-sage-500 tracking-[0.3em] uppercase mt-2">AQI</span>
+          </div>
         </div>
-    </div>
+      </section>
 
-    <div class="flex flex-col items-center justify-center py-8">
-        <div class="w-56 h-56 rounded-full flex flex-col items-center justify-center glass border-white/10 animate-pulse-slow">
-            <span class="text-[9px] uppercase opacity-40 tracking-[0.3em] mb-2">Air Quality</span>
-            <span class="text-7xl font-extralight">82</span>
-            <span class="text-xs opacity-50 mt-2 tracking-widest">FAIR</span>
-        </div>
-    </div>
-
-    <div class="w-full max-w-sm glass rounded-[36px] p-6 mb-4 flex flex-col gap-6">
-        <div class="flex justify-between bg-black/30 rounded-full p-1">
-            <button class="flex-1 py-2 rounded-full bg-white/20 text-xs font-medium">Auto</button>
-            <button class="flex-1 py-2 rounded-full text-xs opacity-40">Night</button>
-            <button class="flex-1 py-2 rounded-full text-xs opacity-40">Boost</button>
-        </div>
-
-        <div class="px-1">
-            <div class="flex justify-between text-[10px] opacity-40 uppercase tracking-widest mb-3">
-                <span>Fan Speed</span>
-                <span>Level 3</span>
-            </div>
-            <input type="range" min="1" max="5" value="3" 
-                   class="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-white">
+      <section id="remote-control-panel" 
+               class="w-full max-w-sm glass-panel p-6 rounded-[2.5rem] flex flex-col justify-between shadow-glass-outer"
+               style="min-height: 340px;"> <div class="flex justify-between items-center mb-4">
+          <h2 class="text-sm font-medium tracking-wide opacity-80 uppercase">Device Control</h2>
+          <span class="text-[10px] bg-white/5 px-3 py-1 rounded-full border border-white/10">Moisture: 45%</span>
         </div>
 
-        <button class="w-full py-4 bg-white text-[#0F3255] rounded-full font-bold text-sm shadow-xl active:scale-95 transition-all">
-            Turn Off Device
+        <div class="bg-black/20 p-1 rounded-2xl border border-white/5">
+          <div class="flex">
+            <button class="flex-1 py-3 rounded-xl text-xs font-medium bg-white/15 border border-white/10">Auto</button>
+            <button class="flex-1 py-3 rounded-xl text-xs font-medium opacity-40">Night</button>
+            <button class="flex-1 py-3 rounded-xl text-xs font-medium opacity-40">Boost</button>
+          </div>
+        </div>
+
+        <div class="bg-white/5 p-5 rounded-3xl border border-white/5 mt-4">
+          <div class="flex justify-between items-end mb-4">
+            <span class="text-[10px] text-white/40 uppercase tracking-widest">Fan Power</span>
+            <span class="text-lg font-medium">Level 3</span>
+          </div>
+          <input type="range" min="1" max="5" value="3" 
+                 class="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-white">
+          <div class="flex justify-between text-[9px] text-white/30 mt-3 px-1">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>MAX</span>
+          </div>
+        </div>
+
+        <button class="w-full py-4 mt-6 bg-white text-peacock-900 rounded-full font-bold text-sm shadow-xl active:scale-95 transition-all">
+          Turn Off Device
         </button>
-    </div>
+      </section>
+
+      <footer class="w-full max-w-sm glass-panel p-5 rounded-3xl">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs opacity-60">HEPA Filter Life</span>
+          <span class="text-xs font-bold">84%</span>
+        </div>
+        <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+          <div class="h-full bg-sage-500 w-[84%]"></div>
+        </div>
+      </footer>
+
+    </main>
+
+    <nav class="fixed bottom-0 left-0 w-full glass-panel border-t border-white/10 pb-8 pt-4 px-8 flex justify-between items-center z-50 rounded-t-[32px]">
+      <a href="#" class="flex flex-col items-center gap-1 text-white">
+        <i class="fa-solid fa-house text-lg"></i>
+        <span class="text-[9px] font-medium">Home</span>
+      </a>
+      <a href="#" class="flex flex-col items-center gap-1 text-white/40">
+        <i class="fa-solid fa-chart-line text-lg"></i>
+        <span class="text-[9px] font-medium">Insights</span>
+      </a>
+      <a href="#" class="flex flex-col items-center gap-1 text-white/40">
+        <i class="fa-regular fa-calendar text-lg"></i>
+        <span class="text-[9px] font-medium">Schedules</span>
+      </a>
+      <a href="#" class="flex flex-col items-center gap-1 text-white/40">
+        <i class="fa-solid fa-gear text-lg"></i>
+        <span class="text-[9px] font-medium">Settings</span>
+      </a>
+    </nav>
 
 </body>
 </html>
