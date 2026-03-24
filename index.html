@@ -1,545 +1,490 @@
+<!DOCTYPE html>
 <html lang="en">
-
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILMA - Home Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
     <script>
-      tailwind.config = {
-        theme:
-        {
-          extend:
-          {
-            colors:
-            {
-              peacock:
-              {
-                900: '#0F3255',
-                800: '#16497B',
-                700: '#1D5A96',
-                600: '#256BB1',
-                500: '#3482CD',
-              },
-              sage:
-              {
-                900: '#43554A',
-                800: '#546A5C',
-                700: '#647B6C',
-                600: '#7A9383',
-                500: '#92AB9B',
-              },
-              glass:
-              {
-                light: 'rgba(255, 255, 255, 0.1)',
-                medium: 'rgba(255, 255, 255, 0.15)',
-                dark: 'rgba(255, 255, 255, 0.25)',
-              }
-            },
-            fontFamily:
-            {
-              sans: ['Inter', 'sans-serif'],
-            },
-            backdropBlur:
-            {
-              '3xl': '30px',
-            },
-            boxShadow:
-            {
-              'glass-inner': 'inset 0 1px 1px rgba(255, 255, 255, 0.3), inset 0 -1px 1px rgba(0, 0, 0, 0.1)',
-              'glass-outer': '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        peacock: {
+                            900: '#0F3255',
+                            800: '#16497B',
+                            700: '#1D5A96',
+                            600: '#256BB1',
+                            500: '#3482CD',
+                            base: '#10253B', /* Updated base gradient color */
+                            dark: '#0B1928'  /* Updated dark gradient color */
+                        },
+                        sage: {
+                            900: '#43554A',
+                            800: '#546A5C',
+                            700: '#647B6C',
+                            600: '#7A9383',
+                            500: '#92AB9B',
+                            accent: '#A4B494' /* NCS S 2040-Y60R approximate */
+                        },
+                        ginger: {
+                            accent: '#C47854' /* NCS S 2060-Y50R approximate */
+                        },
+                        coconut: {
+                            white: '#F5F5F0' /* NCS S 1002-Y approximate */
+                        },
+                        glass: {
+                            light: 'rgba(245, 245, 240, 0.1)',
+                            medium: 'rgba(245, 245, 240, 0.15)',
+                            dark: 'rgba(245, 245, 240, 0.25)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    backdropBlur: {
+                        '3xl': '30px',
+                    },
+                    boxShadow: {
+                        'glass-inner': 'inset 0 1px 1px rgba(255, 255, 255, 0.3), inset 0 -1px 1px rgba(0, 0, 0, 0.1)',
+                        'glass-outer': '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
+                    }
+                }
             }
-          }
         }
-      }
     </script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap"
-      rel="stylesheet">
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-      body
-      {
-        background: linear-gradient(135deg, #16497B 0%, #0F3255 100%);
-        color: white;
-        font-family: 'Inter', sans-serif;
-        -webkit-font-smoothing: antialiased;
-        overflow-x: hidden;
-      }
-
-      .glass-panel
-      {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(30px);
-        -webkit-backdrop-filter: blur(30px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-      }
-
-      .pulse-ring
-      {
-        position: relative;
-        width: 240px;
-        height: 240px;
-      }
-
-      .pulse-ring::before,
-      .pulse-ring::after
-      {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        border: 2px solid #647B6C;
-        animation: pulse 3s linear infinite;
-      }
-
-      .pulse-ring::after
-      {
-        animation-delay: 1.5s;
-      }
-
-      @keyframes pulse
-      {
-        0%
-        {
-          width: 200px;
-          height: 200px;
-          opacity: 0.8;
+        body {
+            background: linear-gradient(180deg, #10253B 0%, #0B1928 100%); /* Deep, dark peacock blue gradient */
+            color: #F5F5F0; /* Coconut white base text color */
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        100%
-        {
-          width: 320px;
-          height: 320px;
-          opacity: 0;
+        /* Glass Panel Enhanced Transparency */
+        .glass-panel {
+            background: rgba(245, 245, 240, 0.03); /* Coconut white based transparency */
+            backdrop-filter: blur(16px); /* Adjusted blur to see background better */
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(245, 245, 240, 0.08);
+            box-shadow: inset 0 1px 1px rgba(245, 245, 240, 0.05), 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
-      }
 
-      .slider-thumb::-webkit-slider-thumb
-      {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: #fff;
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-      }
+        .pulse-ring {
+            position: relative;
+            width: 240px;
+            height: 240px;
+        }
 
-      ::-webkit-scrollbar
-      {
-        display: none;
-      }
+        .pulse-ring::before,
+        .pulse-ring::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2px solid #A4B494; /* Sage green accent */
+            animation: pulse 3s linear infinite;
+        }
+
+        .pulse-ring::after {
+            animation-delay: 1.5s;
+        }
+
+        @keyframes pulse {
+            0% { width: 200px; height: 200px; opacity: 0.8; }
+            100% { width: 320px; height: 320px; opacity: 0; }
+        }
+
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #F5F5F0; /* Coconut white */
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
     </style>
-    <style data-grapesjs-styles="true">
-      #iawggj
-      {
-        width: 50%;
-      }
+</head>
+<body class="w-full min-h-screen text-coconut-white flex flex-col md:flex-row pb-20 md:pb-0 relative">
 
-      #i577x3
-      {
-        left: calc(50% - 12px);
-      }
-
-      #iovuc5
-      {
-        left: calc(50% - 20px);
-      }
-
-      #i0n4nr
-      {
-        width: 84%;
-      }
-    </style>
-  </head>
-
-  <body
-    class="w-full min-h-screen text-white flex flex-col md:flex-row pb-20 md:pb-0">
     <!-- Mobile Header -->
-    <header id="mobile-header"
-      class="w-full px-6 pt-12 pb-6 flex justify-between items-center md:hidden z-50 relative glass-panel rounded-b-3xl">
-      <div class="flex flex-col"><span
-          class="text-xs text-white/60 font-light tracking-wider uppercase mb-1">Home
-          Environment</span>
-        <h1 class="text-xl font-medium text-white flex items-center gap-2">
-          Healthy
-          <i class="fa-solid fa-leaf text-sage-500 text-sm"></i>
-        </h1>
-      </div>
-      <div class="flex items-center gap-4">
-        <div class="text-right flex flex-col items-end"><span
-            class="text-sm font-medium">22°C</span><span
-            class="text-xs text-white/60">45%</span></div>
-        <div class="relative"><i class="fa-solid fa-wifi text-white/80"></i>
+    <header id="mobile-header" class="w-full px-6 pt-12 pb-6 flex justify-between items-center md:hidden z-50 relative glass-panel rounded-b-3xl">
+        <div class="flex flex-col">
+            <span class="text-xs text-coconut-white/60 font-light tracking-wider uppercase mb-1">Home Environment</span>
+            <h1 class="text-xl font-medium text-coconut-white flex items-center gap-2">
+                Healthy
+                <i class="fa-solid fa-leaf text-sage-accent text-sm"></i>
+            </h1>
         </div>
-      </div>
-    </header><!-- Desktop Sidebar Navigation -->
-    <nav id="desktop-sidebar"
-      class="hidden md:flex flex-col w-24 lg:w-64 h-screen glass-panel fixed left-0 top-0 border-r border-white/10 z-40">
-      <div class="p-6 flex justify-center lg:justify-start items-center gap-3">
-        <div
-          class="w-10 h-10 rounded-full bg-peacock-600 flex items-center justify-center">
-          <span class="font-semibold text-lg">I</span></div><span
-          class="font-medium text-xl hidden lg:block tracking-widest">ILMA</span>
-      </div>
-      <div class="flex-1 mt-12 flex flex-col gap-2 px-4"><a href="#"
-          class="flex items-center gap-4 p-4 rounded-2xl bg-white/10 text-white transition-all"><i
-            class="fa-solid fa-house text-xl w-6 text-center"></i><span
-            class="hidden lg:block font-medium">Home</span></a><a href="#"
-          class="flex items-center gap-4 p-4 rounded-2xl text-white/60 hover:bg-white/5 hover:text-white transition-all"><i
-            class="fa-solid fa-chart-line text-xl w-6 text-center"></i><span
-            class="hidden lg:block font-medium">Insights</span></a><a href="#"
-          class="flex items-center gap-4 p-4 rounded-2xl text-white/60 hover:bg-white/5 hover:text-white transition-all"><i
-            class="fa-regular fa-calendar text-xl w-6 text-center"></i><span
-            class="hidden lg:block font-medium">Schedules</span></a><a href="#"
-          class="flex items-center gap-4 p-4 rounded-2xl text-white/60 hover:bg-white/5 hover:text-white transition-all"><i
-            class="fa-solid fa-gear text-xl w-6 text-center"></i><span
-            class="hidden lg:block font-medium">Settings</span></a></div>
-      <div class="p-6">
-        <div
-          class="w-10 h-10 rounded-full overflow-hidden mx-auto lg:mx-0 border-2 border-white/20">
-          <img
-            src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg"
-            alt="User Profile" class="w-full h-full object-cover"></div>
-      </div>
-    </nav><!-- Main Content Area -->
-    <main
-      class="w-full md:ml-24 lg:ml-64 flex-1 flex flex-col min-h-screen relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
-      <!-- Desktop Header (Hidden on Mobile) -->
-      <header id="desktop-header"
-        class="hidden md:flex w-full justify-between items-center mb-12 glass-panel p-6 rounded-3xl">
-        <div class="flex flex-col"><span
-            class="text-sm text-white/60 font-light tracking-wider uppercase mb-1">Home
-            Environment</span>
-          <h1 class="text-3xl font-medium text-white flex items-center gap-3">
-            Healthy
-            <i class="fa-solid fa-leaf text-sage-500 text-xl"></i>
-          </h1>
-        </div>
-        <div class="flex items-center gap-8">
-          <div
-            class="flex items-center gap-6 glass-panel px-6 py-3 rounded-2xl">
-            <div class="flex flex-col items-center"><i
-                class="fa-solid fa-temperature-half text-white/60 text-sm mb-1"></i><span
-                class="text-lg font-medium">22°C</span></div>
-            <div class="w-px h-8 bg-white/10"></div>
-            <div class="flex flex-col items-center"><i
-                class="fa-solid fa-droplet text-white/60 text-sm mb-1"></i><span
-                class="text-lg font-medium">45%</span></div>
-          </div>
-          <div
-            class="relative glass-panel p-4 rounded-full flex items-center justify-center">
-            <div
-              class="w-2 h-2 rounded-full bg-sage-500 animate-pulse absolute top-2 right-2">
-            </div><i class="fa-solid fa-wifi text-white/80 text-lg"></i>
-          </div>
-        </div>
-      </header><!-- Hero Section: Air Pulse -->
-      <section id="hero-pulse"
-        class="flex-1 flex flex-col items-center justify-center min-h-[40vh] md:min-h-[50vh] relative mb-8">
-        <div
-          class="pulse-ring flex items-center justify-center rounded-full glass-panel shadow-[0_0_60px_rgba(100,123,108,0.2)]">
-          <div
-            class="w-48 h-48 rounded-full bg-gradient-to-br from-sage-700/40 to-peacock-800/40 flex flex-col items-center justify-center border border-white/10 backdrop-blur-md shadow-inner">
-            <span
-              class="text-6xl font-light tracking-tighter text-white drop-shadow-lg">98</span><span
-              class="text-sm font-medium text-sage-500 tracking-widest uppercase mt-2">AQI</span>
-          </div>
-        </div>
-        <p
-          class="mt-12 text-white/70 font-light tracking-wide text-center max-w-md">
-          Air purification is running optimally. The room will be fully purified
-          in 12 minutes.</p>
-      </section><!-- Controls Section -->
-      <section id="controls"
-        class="w-full max-w-2xl mx-auto mb-12 flex flex-col gap-6">
-        <!-- Mode Buttons -->
-        <div class="grid grid-cols-3 gap-3 md:gap-6"><button
-            class="glass-panel py-4 px-2 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-white/10 transition-colors border border-white/20 text-white/60"><i
-              class="fa-solid fa-hand-pointer text-xl"></i><span
-              class="text-xs md:text-sm font-medium">Manual</span></button><button
-            class="glass-panel py-4 px-2 rounded-2xl flex flex-col items-center justify-center gap-2 bg-white/10 border-sage-500/50 text-white shadow-[inset_0_0_20px_rgba(100,123,108,0.2)]"><i
-              class="fa-solid fa-wand-magic-sparkles text-xl text-sage-500"></i><span
-              class="text-xs md:text-sm font-medium">Auto</span></button><button
-            class="glass-panel py-4 px-2 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-white/10 transition-colors border border-white/20 text-white/60"><i
-              class="fa-solid fa-wind text-xl"></i><span
-              class="text-xs md:text-sm font-medium">Boost</span></button></div>
-        <!-- Fan Speed Slider -->
-        <div class="glass-panel p-6 rounded-3xl flex flex-col gap-4">
-          <div
-            class="flex justify-between items-center text-sm font-medium text-white/80">
-            <span>Fan Speed</span><span class="text-sage-500">Level 3</span>
-          </div>
-          <div
-            class="relative w-full h-2 bg-white/10 rounded-full flex items-center">
-            <div
-              class="absolute left-0 h-full bg-gradient-to-r from-peacock-500 to-sage-500 rounded-full"
-              id="iawggj"></div><input type="range" min="1" max="5" value="3"
-              class="w-full absolute opacity-0 cursor-pointer h-full z-10">
-            <div
-              class="w-6 h-6 bg-white rounded-full absolute shadow-lg border border-gray-200 z-0 flex items-center justify-center"
-              id="i577x3">
-              <div class="w-2 h-2 rounded-full bg-peacock-600"></div>
+        <div class="flex items-center gap-4">
+            <div class="text-right flex flex-col items-end">
+                <span class="text-sm font-medium">22°C</span>
+                <span class="text-xs text-coconut-white/60">45%</span>
             </div>
-          </div>
-          <div class="flex justify-between text-xs text-white/40 mt-1 px-1">
-            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-          </div>
+            <div class="relative">
+                <div class="w-2 h-2 rounded-full bg-sage-accent animate-pulse absolute -top-1 -right-1"></div>
+                <i class="fa-solid fa-wifi text-coconut-white/80"></i>
+            </div>
         </div>
-      </section><!-- Dashboard Modules Grid -->
-      <section id="dashboard-modules"
-        class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-12">
-        <!-- Air Quality Module -->
-        <div
-          class="glass-panel p-6 rounded-3xl flex flex-col relative overflow-hidden group">
-          <div
-            class="absolute top-0 right-0 w-32 h-32 bg-peacock-500/10 rounded-full blur-2xl -mr-10 -mt-10">
-          </div>
-          <div class="flex justify-between items-start mb-6 z-10">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                <i class="fa-solid fa-wind text-sage-500"></i></div>
-              <h3 class="text-lg font-medium text-white">Air Quality</h3>
-            </div><button
-              class="text-white/40 hover:text-white transition-colors"><i
-                class="fa-solid fa-ellipsis"></i></button>
-          </div>
-          <div class="flex justify-between items-end mb-4 z-10">
-            <div><span
-                class="text-sm text-white/60 font-light block mb-1">PM2.5</span>
-              <div class="flex items-baseline gap-1"><span
-                  class="text-3xl font-medium">12</span><span
-                  class="text-xs text-white/40">µg/m³</span></div>
+    </header>
+
+    <!-- Desktop Sidebar Navigation -->
+    <nav id="desktop-sidebar" class="hidden md:flex flex-col w-24 lg:w-64 h-screen glass-panel fixed left-0 top-0 border-r border-coconut-white/10 z-40">
+        <div class="p-6 flex justify-center lg:justify-start items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-peacock-600 flex items-center justify-center">
+                <span class="font-semibold text-lg text-coconut-white">I</span>
             </div>
-            <div class="text-right"><span
-                class="text-sm text-white/60 font-light block mb-1">VOC</span><span
-                class="text-sm text-sage-500 font-medium bg-sage-500/10 px-2 py-1 rounded-md">Excellent</span>
-            </div>
-          </div>
-          <div id="aqi-sparkline" class="w-full h-16 mt-auto z-10"></div>
-        </div><!-- Plant Health Module -->
-        <div
-          class="glass-panel p-6 rounded-3xl flex flex-col relative overflow-hidden group">
-          <div
-            class="absolute bottom-0 right-0 w-40 h-40 bg-sage-600/10 rounded-full blur-2xl -mr-10 -mb-10">
-          </div>
-          <div class="flex justify-between items-start mb-6 z-10">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                <i class="fa-solid fa-seedling text-sage-500"></i></div>
-              <h3 class="text-lg font-medium text-white">Plant Health</h3>
-            </div><button
-              class="text-white/40 hover:text-white transition-colors"><i
-                class="fa-solid fa-chevron-right"></i></button>
-          </div>
-          <div class="flex items-center gap-6 z-10">
-            <div class="relative w-24 h-24 flex items-center justify-center">
-              <svg viewBox="0 0 100 100"
-                class="w-full h-full transform -rotate-90">
-                <circle cx="50" cy="50" r="40" fill="transparent"
-                  stroke="rgba(255,255,255,0.1)" stroke-width="6"></circle>
-                <circle cx="50" cy="50" r="40" fill="transparent"
-                  stroke="#647B6C" stroke-width="6" stroke-dasharray="251.2"
-                  stroke-dashoffset="80.38" stroke-linecap="round"></circle>
-              </svg>
-              <div class="absolute flex flex-col items-center"><span
-                  class="text-2xl font-medium">68%</span><span
-                  class="text-[10px] text-white/60 uppercase">Moisture</span>
-              </div>
-            </div>
-            <div class="flex flex-col gap-3 flex-1">
-              <div
-                class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3">
-                <i class="fa-solid fa-droplet text-peacock-500"></i>
-                <div class="flex flex-col"><span
-                    class="text-sm font-medium">Watering</span><span
-                    class="text-xs text-white/60">In 2 days</span></div>
-              </div>
-              <div
-                class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-center gap-3">
-                <i class="fa-regular fa-sun text-yellow-500/80"></i>
-                <div class="flex flex-col"><span
-                    class="text-sm font-medium">Light</span><span
-                    class="text-xs text-white/60">Optimal</span></div>
-              </div>
-            </div>
-          </div>
+            <span class="font-medium text-xl hidden lg:block tracking-widest text-coconut-white">ILMA</span>
         </div>
-      </section><!-- Control Panel Section (New) -->
-      <section id="remote-control-panel"
-        class="w-full max-w-2xl mx-auto mb-12 glass-panel p-6 rounded-[2.5rem] relative overflow-hidden shadow-glass-outer border border-white/20">
-        <div
-          class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none">
+        
+        <div class="flex-1 mt-12 flex flex-col gap-2 px-4">
+            <a href="#" class="flex items-center gap-4 p-4 rounded-2xl bg-coconut-white/10 text-coconut-white transition-all">
+                <i class="fa-solid fa-house text-xl w-6 text-center"></i>
+                <span class="hidden lg:block font-medium">Home</span>
+            </a>
+            <a href="#" class="flex items-center gap-4 p-4 rounded-2xl text-coconut-white/60 hover:bg-coconut-white/5 hover:text-coconut-white transition-all">
+                <i class="fa-solid fa-chart-line text-xl w-6 text-center"></i>
+                <span class="hidden lg:block font-medium">Insights</span>
+            </a>
+            <a href="#" class="flex items-center gap-4 p-4 rounded-2xl text-coconut-white/60 hover:bg-coconut-white/5 hover:text-coconut-white transition-all">
+                <i class="fa-regular fa-calendar text-xl w-6 text-center"></i>
+                <span class="hidden lg:block font-medium">Schedules</span>
+            </a>
+            <a href="#" class="flex items-center gap-4 p-4 rounded-2xl text-coconut-white/60 hover:bg-coconut-white/5 hover:text-coconut-white transition-all">
+                <i class="fa-solid fa-gear text-xl w-6 text-center"></i>
+                <span class="hidden lg:block font-medium">Settings</span>
+            </a>
         </div>
-        <div class="flex justify-between items-center mb-8 relative z-10">
-          <h2 class="text-xl font-medium text-white tracking-wide">Device
-            Control</h2>
-          <div
-            class="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10 shadow-glass-inner">
-            <i class="fa-solid fa-droplet text-sage-500 text-xs"></i><span
-              class="text-xs font-medium text-white/80">Plant Moisture:
-              45%</span></div>
-        </div><!-- Segmented Control -->
-        <div
-          class="flex bg-black/20 p-1.5 rounded-2xl mb-8 relative z-10 shadow-glass-inner border border-white/5">
-          <button
-            class="flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 bg-white/15 text-white shadow-md border border-white/20 backdrop-blur-md">
-            Auto
-          </button><button
-            class="flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 text-white/50 hover:text-white/80 hover:bg-white/5">
-            Night
-          </button><button
-            class="flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 text-white/50 hover:text-white/80 hover:bg-white/5">
-            Boost
-          </button></div><!-- Tactile Fan Slider -->
-        <div
-          class="relative z-10 bg-white/5 p-6 rounded-3xl border border-white/10 shadow-glass-inner">
-          <div class="flex justify-between items-end mb-6">
-            <div class="flex flex-col gap-1"><span
-                class="text-xs text-white/50 uppercase tracking-widest font-light">Fan
-                Power</span><span
-                class="text-2xl font-medium text-white flex items-center gap-2">
-                Level 3 <i
-                  class="fa-solid fa-wind text-sage-500 text-lg"></i></span>
+        
+        <div class="p-6">
+            <div class="w-10 h-10 rounded-full overflow-hidden mx-auto lg:mx-0 border-2 border-coconut-white/20">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="User Profile" class="w-full h-full object-cover">
             </div>
-          </div>
-          <div class="relative w-full h-12 flex items-center">
-            <!-- Custom Slider Track -->
-            <div
-              class="absolute w-full h-3 bg-black/30 rounded-full shadow-glass-inner border border-white/5 overflow-hidden">
-              <div
-                class="h-full bg-gradient-to-r from-sage-600 to-peacock-500 w-[50%] rounded-full shadow-[0_0_10px_rgba(100,123,108,0.5)]">
-              </div>
-            </div><!-- Tactile Markers -->
-            <div
-              class="absolute w-full flex justify-between px-1 pointer-events-none z-0">
-              <div class="w-1 h-3 bg-white/20 rounded-full"></div>
-              <div class="w-1 h-3 bg-white/20 rounded-full"></div>
-              <div class="w-1 h-3 bg-white/20 rounded-full"></div>
-              <div class="w-1 h-3 bg-white/20 rounded-full"></div>
-              <div class="w-1 h-3 bg-white/20 rounded-full"></div>
-            </div><!-- Input Range --><input type="range" min="1" max="5"
-              value="3"
-              class="w-full absolute opacity-0 cursor-pointer h-full z-20">
-            <!-- Custom Thumb -->
-            <div
-              class="w-10 h-10 bg-white rounded-full absolute shadow-[0_4px_12px_rgba(0,0,0,0.3)] border-2 border-white/90 z-10 flex items-center justify-center transition-transform hover:scale-105"
-              id="iovuc5">
-              <div
-                class="w-4 h-4 rounded-full bg-gradient-to-br from-gray-100 to-gray-300 shadow-inner flex items-center justify-center">
-                <div
-                  class="w-1.5 h-1.5 rounded-full bg-sage-500 shadow-[0_0_5px_rgba(100,123,108,0.8)]">
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="w-full md:ml-24 lg:ml-64 flex-1 flex flex-col min-h-screen relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
+        
+        <!-- Desktop Header (Hidden on Mobile) -->
+        <header id="desktop-header" class="hidden md:flex w-full justify-between items-center mb-12 glass-panel p-6 rounded-3xl">
+            <div class="flex flex-col">
+                <span class="text-sm text-coconut-white/60 font-light tracking-wider uppercase mb-1">Home Environment</span>
+                <h1 class="text-3xl font-medium text-coconut-white flex items-center gap-3">
+                    Healthy
+                    <i class="fa-solid fa-leaf text-sage-accent text-xl"></i>
+                </h1>
+            </div>
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-6 glass-panel px-6 py-3 rounded-2xl">
+                    <div class="flex flex-col items-center">
+                        <i class="fa-solid fa-temperature-half text-coconut-white/60 text-sm mb-1"></i>
+                        <span class="text-lg font-medium text-coconut-white">22°C</span>
+                    </div>
+                    <div class="w-px h-8 bg-coconut-white/10"></div>
+                    <div class="flex flex-col items-center">
+                        <i class="fa-solid fa-droplet text-coconut-white/60 text-sm mb-1"></i>
+                        <span class="text-lg font-medium text-coconut-white">45%</span>
+                    </div>
                 </div>
-              </div>
+                <div class="relative glass-panel p-4 rounded-full flex items-center justify-center">
+                    <div class="w-2 h-2 rounded-full bg-sage-accent animate-pulse absolute top-2 right-2"></div>
+                    <i class="fa-solid fa-wifi text-coconut-white/80 text-lg"></i>
+                </div>
             </div>
-          </div>
-          <div
-            class="flex justify-between text-[10px] text-white/40 mt-4 px-2 font-medium tracking-widest">
-            <span>1</span><span>2</span><span>3</span><span>4</span><span>MAX</span>
-          </div>
-        </div>
-      </section><!-- Footer Elements (Filter Life) -->
-      <footer id="desktop-footer"
-        class="w-full mt-auto glass-panel p-6 rounded-3xl mb-8 md:mb-0">
-        <div class="flex justify-between items-center mb-3">
-          <div class="flex items-center gap-3"><i
-              class="fa-solid fa-filter text-white/60"></i><span
-              class="text-sm font-medium text-white/80">HEPA Filter Life</span>
-          </div><span class="text-sm font-medium text-white">84%</span>
-        </div>
-        <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
-          <div class="h-full bg-sage-500 rounded-full" id="i0n4nr"></div>
-        </div>
-        <p class="text-xs text-white/40 mt-3 text-right">Est. replacement in 4
-          months</p>
-      </footer>
-    </main><!-- Mobile Bottom Navigation Tab Bar -->
-    <nav id="mobile-tab-bar"
-      class="md:hidden fixed bottom-0 left-0 w-full glass-panel border-t border-white/10 pb-safe pt-2 px-6 flex justify-between items-center z-50 rounded-t-3xl h-20">
-      <a href="#" class="flex flex-col items-center gap-1 p-2 text-white"><i
-          class="fa-solid fa-house text-xl mb-1"></i><span
-          class="text-[10px] font-medium">Home</span>
-        <div class="w-1 h-1 rounded-full bg-sage-500 mt-0.5"></div>
-      </a><a href="#"
-        class="flex flex-col items-center gap-1 p-2 text-white/40 hover:text-white transition-colors"><i
-          class="fa-solid fa-chart-line text-xl mb-1"></i><span
-          class="text-[10px] font-medium">Insights</span></a><a href="#"
-        class="flex flex-col items-center gap-1 p-2 text-white/40 hover:text-white transition-colors"><i
-          class="fa-regular fa-calendar text-xl mb-1"></i><span
-          class="text-[10px] font-medium">Schedules</span></a><a href="#"
-        class="flex flex-col items-center gap-1 p-2 text-white/40 hover:text-white transition-colors"><i
-          class="fa-solid fa-gear text-xl mb-1"></i><span
-          class="text-[10px] font-medium">Settings</span></a></nav>
+        </header>
+
+        <!-- Hero Section: Air Pulse -->
+        <section id="hero-pulse" class="flex-1 flex flex-col items-center justify-center min-h-[40vh] md:min-h-[50vh] relative mb-8 z-10">
+            <div class="pulse-ring flex items-center justify-center rounded-full glass-panel shadow-[0_0_80px_rgba(164,180,148,0.3)] backdrop-blur-sm bg-black/10">
+                <div class="w-48 h-48 rounded-full bg-gradient-to-br from-sage-accent/40 to-peacock-800/60 flex flex-col items-center justify-center border border-coconut-white/20 backdrop-blur-xl shadow-inner relative z-20">
+                    <span class="text-6xl font-light tracking-tighter text-coconut-white drop-shadow-lg">98</span>
+                    <span class="text-sm font-medium text-sage-accent tracking-widest uppercase mt-2">AQI</span>
+                </div>
+            </div>
+            <p class="mt-12 text-coconut-white/70 font-light tracking-wide text-center max-w-md relative z-10">Air purification is running optimally. The room will be fully purified in 12 minutes.</p>
+        </section>
+
+        <!-- Controls Section -->
+        <section id="controls" class="w-full max-w-2xl mx-auto mb-12 flex flex-col gap-6 relative z-10">
+            <!-- Mode Buttons -->
+            <div class="grid grid-cols-3 gap-3 md:gap-6">
+                <button class="glass-panel py-4 px-2 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-coconut-white/10 transition-colors border border-coconut-white/20 text-coconut-white/60">
+                    <i class="fa-solid fa-hand-pointer text-xl"></i>
+                    <span class="text-xs md:text-sm font-medium">Manual</span>
+                </button>
+                <button class="glass-panel py-4 px-2 rounded-2xl flex flex-col items-center justify-center gap-2 bg-coconut-white/10 border-sage-accent/50 text-coconut-white shadow-[inset_0_0_20px_rgba(164,180,148,0.2)]">
+                    <i class="fa-solid fa-wand-magic-sparkles text-xl text-sage-accent"></i>
+                    <span class="text-xs md:text-sm font-medium">Auto</span>
+                </button>
+                <button class="glass-panel py-4 px-2 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-coconut-white/10 transition-colors border border-coconut-white/20 text-coconut-white/60">
+                    <i class="fa-solid fa-wind text-xl"></i>
+                    <span class="text-xs md:text-sm font-medium">Boost</span>
+                </button>
+            </div>
+
+            <!-- Fan Speed Slider -->
+            <div class="glass-panel p-6 rounded-3xl flex flex-col gap-4">
+                <div class="flex justify-between items-center text-sm font-medium text-coconut-white/80">
+                    <span>Fan Speed</span>
+                    <span class="text-sage-accent">Level 3</span>
+                </div>
+                <div class="relative w-full h-2 bg-coconut-white/10 rounded-full flex items-center">
+                    <div class="absolute left-0 h-full bg-gradient-to-r from-peacock-500 to-sage-accent rounded-full" style="width: 50%;"></div>
+                    <input type="range" min="1" max="5" value="3" class="w-full absolute opacity-0 cursor-pointer h-full z-10">
+                    <div class="w-6 h-6 bg-coconut-white rounded-full absolute shadow-lg border border-gray-200 z-0 flex items-center justify-center" style="left: calc(50% - 12px);">
+                        <div class="w-2 h-2 rounded-full bg-peacock-600"></div>
+                    </div>
+                </div>
+                <div class="flex justify-between text-xs text-coconut-white/40 mt-1 px-1">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Modules Grid -->
+        <section id="dashboard-modules" class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-12">
+            
+            <!-- Air Quality Module -->
+            <div class="glass-panel p-6 rounded-3xl flex flex-col relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-peacock-500/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                <div class="flex justify-between items-start mb-6 z-10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-coconut-white/5 flex items-center justify-center border border-coconut-white/10">
+                            <i class="fa-solid fa-wind text-sage-accent"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-coconut-white">Air Quality</h3>
+                    </div>
+                    <button class="text-coconut-white/40 hover:text-coconut-white transition-colors">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </button>
+                </div>
+                
+                <div class="flex justify-between items-end mb-4 z-10">
+                    <div>
+                        <span class="text-sm text-coconut-white/60 font-light block mb-1">PM2.5</span>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-3xl font-medium text-coconut-white">12</span>
+                            <span class="text-xs text-coconut-white/40">µg/m³</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-sm text-coconut-white/60 font-light block mb-1">VOC</span>
+                        <span class="text-sm text-sage-accent font-medium bg-sage-accent/10 px-2 py-1 rounded-md">Excellent</span>
+                    </div>
+                </div>
+                
+                <div class="w-full h-16 mt-auto z-10" id="aqi-sparkline"></div>
+            </div>
+
+            <!-- Plant Health Module -->
+            <div class="glass-panel p-6 rounded-3xl flex flex-col relative overflow-hidden group">
+                <div class="absolute bottom-0 right-0 w-40 h-40 bg-sage-accent/10 rounded-full blur-2xl -mr-10 -mb-10"></div>
+                <div class="flex justify-between items-start mb-6 z-10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-coconut-white/5 flex items-center justify-center border border-coconut-white/10">
+                            <i class="fa-solid fa-seedling text-sage-accent"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-coconut-white">Plant Health</h3>
+                    </div>
+                    <button class="text-coconut-white/40 hover:text-coconut-white transition-colors">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-6 z-10">
+                    <div class="relative w-24 h-24 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="transparent" stroke="rgba(245,245,240,0.1)" stroke-width="6" />
+                            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#A4B494" stroke-width="6" stroke-dasharray="251.2" stroke-dashoffset="80.38" stroke-linecap="round" />
+                        </svg>
+                        <div class="absolute flex flex-col items-center">
+                            <span class="text-2xl font-medium text-coconut-white">68%</span>
+                            <span class="text-[10px] text-coconut-white/60 uppercase">Moisture</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-3 flex-1">
+                        <div class="bg-coconut-white/5 border border-coconut-white/10 rounded-xl p-3 flex items-center gap-3">
+                            <i class="fa-solid fa-droplet text-peacock-500"></i>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-medium text-coconut-white">Watering</span>
+                                <span class="text-xs text-coconut-white/60">In 2 days</span>
+                            </div>
+                        </div>
+                        <div class="bg-coconut-white/5 border border-coconut-white/10 rounded-xl p-3 flex items-center gap-3">
+                            <i class="fa-regular fa-sun text-ginger-accent"></i>
+                            <div class="flex flex-col">
+                                <span class="text-sm font-medium text-coconut-white">Light</span>
+                                <span class="text-xs text-coconut-white/60">Optimal</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+
+        <!-- Control Panel Section (New) -->
+        <section id="remote-control-panel" class="w-full max-w-2xl mx-auto mb-12 glass-panel p-6 rounded-[2.5rem] relative overflow-hidden shadow-glass-outer border border-coconut-white/20">
+            <div class="absolute inset-0 bg-gradient-to-br from-coconut-white/5 to-transparent pointer-events-none"></div>
+            
+            <div class="flex justify-between items-center mb-8 relative z-10">
+                <h2 class="text-xl font-medium text-coconut-white tracking-wide">Device Control</h2>
+                <div class="flex items-center gap-2 bg-coconut-white/5 px-3 py-1.5 rounded-full border border-coconut-white/10 shadow-glass-inner">
+                    <i class="fa-solid fa-droplet text-sage-accent text-xs"></i>
+                    <span class="text-xs font-medium text-coconut-white/80">Plant Moisture: 45%</span>
+                </div>
+            </div>
+
+            <!-- Segmented Control -->
+            <div class="flex bg-black/20 p-1.5 rounded-2xl mb-8 relative z-10 shadow-glass-inner border border-coconut-white/5">
+                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 bg-coconut-white/15 text-coconut-white shadow-md border border-coconut-white/20 backdrop-blur-md">
+                    Auto
+                </button>
+                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 text-coconut-white/50 hover:text-coconut-white/80 hover:bg-coconut-white/5">
+                    Night
+                </button>
+                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 text-coconut-white/50 hover:text-coconut-white/80 hover:bg-coconut-white/5">
+                    Boost
+                </button>
+            </div>
+
+            <!-- Tactile Fan Slider -->
+            <div class="relative z-10 bg-coconut-white/5 p-6 rounded-3xl border border-coconut-white/10 shadow-glass-inner">
+                <div class="flex justify-between items-end mb-6">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs text-coconut-white/50 uppercase tracking-widest font-light">Fan Power</span>
+                        <span class="text-2xl font-medium text-coconut-white flex items-center gap-2">
+                            Level 3 <i class="fa-solid fa-wind text-sage-accent text-lg"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="relative w-full h-12 flex items-center">
+                    <!-- Custom Slider Track -->
+                    <div class="absolute w-full h-3 bg-black/30 rounded-full shadow-glass-inner border border-coconut-white/5 overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-sage-accent to-peacock-500 w-[50%] rounded-full shadow-[0_0_10px_rgba(164,180,148,0.5)]"></div>
+                    </div>
+                    
+                    <!-- Tactile Markers -->
+                    <div class="absolute w-full flex justify-between px-1 pointer-events-none z-0">
+                        <div class="w-1 h-3 bg-coconut-white/20 rounded-full"></div>
+                        <div class="w-1 h-3 bg-coconut-white/20 rounded-full"></div>
+                        <div class="w-1 h-3 bg-coconut-white/20 rounded-full"></div>
+                        <div class="w-1 h-3 bg-coconut-white/20 rounded-full"></div>
+                        <div class="w-1 h-3 bg-coconut-white/20 rounded-full"></div>
+                    </div>
+
+                    <!-- Input Range -->
+                    <input type="range" min="1" max="5" value="3" class="w-full absolute opacity-0 cursor-pointer h-full z-20">
+                    
+                    <!-- Custom Thumb -->
+                    <div class="w-10 h-10 bg-coconut-white rounded-full absolute shadow-[0_4px_12px_rgba(0,0,0,0.3)] border-2 border-coconut-white/90 z-10 flex items-center justify-center transition-transform hover:scale-105" style="left: calc(50% - 20px);">
+                        <div class="w-4 h-4 rounded-full bg-gradient-to-br from-gray-100 to-gray-300 shadow-inner flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-sage-accent shadow-[0_0_5px_rgba(164,180,148,0.8)]"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between text-[10px] text-coconut-white/40 mt-4 px-2 font-medium tracking-widest">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>MAX</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer Elements (Filter Life) -->
+        <footer id="desktop-footer" class="w-full mt-auto glass-panel p-6 rounded-3xl mb-8 md:mb-0">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-filter text-coconut-white/60"></i>
+                    <span class="text-sm font-medium text-coconut-white/80">HEPA Filter Life</span>
+                </div>
+                <span class="text-sm font-medium text-coconut-white">84%</span>
+            </div>
+            <div class="w-full h-1.5 bg-coconut-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-ginger-accent rounded-full" style="width: 84%;"></div>
+            </div>
+            <p class="text-xs text-coconut-white/40 mt-3 text-right">Est. replacement in 4 months</p>
+        </footer>
+
+    </main>
+
+    <!-- Mobile Bottom Navigation Tab Bar -->
+    <nav id="mobile-tab-bar" class="md:hidden fixed bottom-0 left-0 w-full glass-panel border-t border-coconut-white/10 pb-safe pt-2 px-6 flex justify-between items-center z-50 rounded-t-3xl h-20">
+        <a href="#" class="flex flex-col items-center gap-1 p-2 text-coconut-white">
+            <i class="fa-solid fa-house text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Home</span>
+            <div class="w-1 h-1 rounded-full bg-sage-accent mt-0.5"></div>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 p-2 text-coconut-white/40 hover:text-coconut-white transition-colors">
+            <i class="fa-solid fa-chart-line text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Insights</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 p-2 text-coconut-white/40 hover:text-coconut-white transition-colors">
+            <i class="fa-regular fa-calendar text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Schedules</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 p-2 text-coconut-white/40 hover:text-coconut-white transition-colors">
+            <i class="fa-solid fa-gear text-xl mb-1"></i>
+            <span class="text-[10px] font-medium">Settings</span>
+        </a>
+    </nav>
+
     <script>
-      // Sparkline Chart for Air Quality
-      window.addEventListener('load', function()
-      {
-        try
-        {
-          var trace1 = {
-            x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            y: [15, 14, 16, 18, 15, 13, 12, 14, 13, 11, 12, 12],
-            type: 'scatter',
-            mode: 'lines',
-            line:
-            {
-              color: '#647B6C',
-              width: 2,
-              shape: 'spline'
-            },
-            fill: 'tozeroy',
-            fillcolor: 'rgba(100, 123, 108, 0.1)',
-            hoverinfo: 'none'
-          };
+        // Sparkline Chart for Air Quality
+        window.addEventListener('load', function() {
+            try {
+                var trace1 = {
+                    x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                    y: [15, 14, 16, 18, 15, 13, 12, 14, 13, 11, 12, 12],
+                    type: 'scatter',
+                    mode: 'lines',
+                    line: {
+                        color: '#A4B494', /* Sage green accent */
+                        width: 2,
+                        shape: 'spline'
+                    },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(164, 180, 148, 0.1)',
+                    hoverinfo: 'none'
+                };
 
-          var layout = {
-            margin:
-            {
-              t: 0,
-              r: 0,
-              b: 0,
-              l: 0
-            },
-            xaxis:
-            {
-              showgrid: false,
-              zeroline: false,
-              showticklabels: false
-            },
-            yaxis:
-            {
-              showgrid: false,
-              zeroline: false,
-              showticklabels: false,
-              range: [0, 25]
-            },
-            paper_bgcolor: 'transparent',
-            plot_bgcolor: 'transparent',
-            showlegend: false,
-            height: 64
-          };
+                var layout = {
+                    margin: { t: 0, r: 0, b: 0, l: 0 },
+                    xaxis: { showgrid: false, zeroline: false, showticklabels: false },
+                    yaxis: { showgrid: false, zeroline: false, showticklabels: false, range: [0, 25] },
+                    paper_bgcolor: 'transparent',
+                    plot_bgcolor: 'transparent',
+                    showlegend: false,
+                    height: 64
+                };
 
-          Plotly.newPlot('aqi-sparkline', [trace1], layout,
-          {
-            displayModeBar: false,
-            responsive: true
-          });
-        }
-        catch (e)
-        {
-          console.error("Plotly chart failed to render", e);
-        }
-      });
+                Plotly.newPlot('aqi-sparkline', [trace1], layout, {displayModeBar: false, responsive: true});
+            } catch(e) {
+                console.error("Plotly chart failed to render", e);
+            }
+        });
     </script>
-  </body>
-
+</body>
 </html>
